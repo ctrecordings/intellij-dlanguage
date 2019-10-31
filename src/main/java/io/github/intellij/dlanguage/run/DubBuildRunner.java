@@ -38,6 +38,7 @@ public class DubBuildRunner extends DefaultProgramRunner {
             Project project = env.getProject();
             String executableFilePath = project.getBasePath().concat("/").concat(project.getName());
 
+
             final DubConfigurationParser dubParser = new DubConfigurationParser(project,
                 ToolKey.DUB_KEY.getPath(), false);
 
@@ -48,6 +49,7 @@ public class DubBuildRunner extends DefaultProgramRunner {
                     dubPackage.getPath(), dubPackage.getTargetPath(), dubPackage.getTargetFileName()).toString().replace("\\", "/");
             }
 
+            executableFilePath = "/usr/local/bin/reaper";
             Executor executor = env.getExecutor();
             return RunUtil.startDebugger(this, state, env, project, executor, executableFilePath);
         }
