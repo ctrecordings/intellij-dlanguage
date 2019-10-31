@@ -50,6 +50,9 @@ public class DlangRunDubConfigurationEditor extends SettingsEditor<DlangRunDubCo
     private JTextField tfMainFile;
     private JCheckBox cbCoverage;
 
+    // Debug Config
+    private JTextField tfDebugExecutable;
+
     private TextFieldWithBrowseButton pathWorkingDir;
     private RawCommandLineEditor textParameters;
     private EnvironmentVariablesComponent envVariables;
@@ -132,6 +135,8 @@ public class DlangRunDubConfigurationEditor extends SettingsEditor<DlangRunDubCo
         config.setWorkingDir(pathWorkingDir.getText());
         config.setAdditionalParams(textParameters.getText());
         config.setEnvVars(envVariables.getEnvs());
+
+        config.setTfDebugExecutable(tfDebugExecutable.getText());
     }
 
     private void resetGeneralTabForm(final DlangRunDubConfiguration config) {
@@ -162,6 +167,8 @@ public class DlangRunDubConfigurationEditor extends SettingsEditor<DlangRunDubCo
 
         pathWorkingDir.setText(config.getWorkingDir());
         textParameters.setText(config.getAdditionalParams());
+
+        tfDebugExecutable.setText(config.getTfDebugExecutable());
         final Map<String, String> envVars = config.getEnvVars();
         if (envVars != null) {
             envVariables.setEnvs(config.getEnvVars());

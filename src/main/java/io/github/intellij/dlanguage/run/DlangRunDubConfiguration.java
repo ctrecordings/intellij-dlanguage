@@ -47,6 +47,8 @@ public class DlangRunDubConfiguration extends ModuleBasedConfiguration<RunConfig
     private boolean verbose = false;
     private String additionalParams;
     private Map<String, String> envVars;
+    //Debug properties
+    private String tfDebugExecutable;
 
     public DlangRunDubConfiguration(final String name, final Project project, final ConfigurationFactory factory) {
         super(name, new RunConfigurationModule(project), factory);
@@ -188,6 +190,10 @@ public class DlangRunDubConfiguration extends ModuleBasedConfiguration<RunConfig
     public void setCbCoverage(final boolean cbCoverage) {
         this.cbCoverage = cbCoverage;
     }
+
+    public void setTfDebugExecutable(final String tfDebugExecutable) { this.tfDebugExecutable = tfDebugExecutable; }
+
+    public String getTfDebugExecutable() { return tfDebugExecutable; }
 
     @Override
     public Collection<Module> getValidModules() {
