@@ -79,14 +79,13 @@ public class GdbMiParser2 {
         final List<GdbMiResult> result = new ArrayList<>();
 
         final String pattern = "\\{" +
-            "(?:level=\"(?<level>\\d+)\")?,?" +
             "(?:addr=\"(?<addr>[^\"]+)\")?,?" +
             "(?:func=\"(?<func>[^\"]+)\")?,?" +
             "(?:args=(?<args>\\[(.*?)\\]))?,?" +
             "(?:file=\"(?<file>[^\"]+)\")?,?" +
             "(?:fullname=\"(?<fullname>[^\"]+)\")?,?" +
             "(?:line=\"(?<line>\\d+)\")?,?" +
-            "(?:from=\"(?<from>[^\"]+)\")?" +
+            "(?:arch=\"(?<arch>.*)\")?" +
             "\\}";
 
         final Pattern p = Pattern.compile(pattern);
@@ -95,14 +94,6 @@ public class GdbMiParser2 {
         while (m.find()) {
             final GdbMiResult subRes = new GdbMiResult("frame");
             final GdbMiValue frameVal = new GdbMiValue(GdbMiValue.Type.Tuple);
-
-            // level="0"
-            if (m.group("level") != null) {
-                GdbMiResult levelVal = new GdbMiResult("level");
-                levelVal.value.type = GdbMiValue.Type.String;
-                levelVal.value.string = m.group("level");
-                frameVal.tuple.add(levelVal);
-            }
 
             // addr="0x0000000000400c57"
             if (m.group("addr") != null) {
@@ -146,17 +137,17 @@ public class GdbMiParser2 {
                 frameVal.tuple.add(lineVal);
             }
 
-            if (m.group("from") != null) {
-                GdbMiResult fromVal = new GdbMiResult("from");
-                fromVal.value.type = GdbMiValue.Type.String;
-                fromVal.value.string = m.group("from");
-                frameVal.tuple.add(fromVal);
+            // arch="i386:x86-64"
+            if(m.group("arch") != null) {
+                GdbMiResult archVal = new GdbMiResult("arch");
+                archVal.value.type = GdbMiValue.Type.String;
+                archVal.value.string = m.group("arch");
+                frameVal.tuple.add(archVal);
             }
 
             subRes.value = frameVal;
             result.add(subRes);
         }
-
         return result;
     }
 
