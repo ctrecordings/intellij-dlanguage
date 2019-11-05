@@ -20,6 +20,11 @@ import java.nio.file.Paths;
 
 public class DubBuildRunner extends DefaultProgramRunner {
 
+    private String debugExecutable = "";
+
+    public String getDebugExecutable() {return debugExecutable;}
+    public void setDebugExecutable(String debugExecutable) {this.debugExecutable = debugExecutable;}
+
     @NotNull
     @Override
     public String getRunnerId() {
@@ -28,6 +33,10 @@ public class DubBuildRunner extends DefaultProgramRunner {
 
     @Override
     public boolean canRun(@NotNull String executorId, @NotNull RunProfile profile) {
+        if(profile instanceof  DlangRunDubConfiguration)
+        {
+            setDebugExecutable(((DlangRunDubConfiguration)profile).getTfDebugExecutable());
+        }
         return (DefaultDebugExecutor.EXECUTOR_ID.equals(executorId) || DefaultRunExecutor.EXECUTOR_ID.equals(executorId)) && profile instanceof DlangRunDubConfiguration;
     }
 
@@ -49,7 +58,11 @@ public class DubBuildRunner extends DefaultProgramRunner {
                     dubPackage.getPath(), dubPackage.getTargetPath(), dubPackage.getTargetFileName()).toString().replace("\\", "/");
             }
 
-            executableFilePath = "/usr/local/bin/reaper";
+            if(getDebugExecutable() != "")
+            {
+                System.out.println("Overriding executable for gdb");
+                executableFilePath = getDebugExecutable();
+            }
             Executor executor = env.getExecutor();
             return RunUtil.startDebugger(this, state, env, project, executor, executableFilePath);
         }
