@@ -26,6 +26,7 @@ package uk.co.cwspencer.gdb.gdbmi;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
@@ -57,53 +58,42 @@ public class GdbMiParser2 {
         this.rawConsole = rawConsole;
     }
 
-    private static GdbMiResult parseBreakpointHitLineFrameLine(String line) {
-        line = "{" + line + "}";
-        Collection<GdbMiResult> results = parseFrameLine(line);
-        GdbMiResult[] result = results.toArray(new GdbMiResult[results.size()]);
-        return result[0];
+    @Nullable
+    private static GdbMiResult parseBreakpointHitLineFrameLine(final String line) {
+        final List<GdbMiResult> results = parseFrameLine("{" + line + "}");
+        return !results.isEmpty() ? results.get(0) : null;
     }
 
     private static GdbMiResult parseStackListLine(String line) {
-        GdbMiResult subRes = new GdbMiResult("stack");
-        GdbMiValue stackListVal = new GdbMiValue(GdbMiValue.Type.List);
+        final GdbMiValue stackListVal = new GdbMiValue(GdbMiValue.Type.List);
 
-        stackListVal.list.results = new ArrayList<GdbMiResult>();
+        stackListVal.list.results = new ArrayList<>();
         stackListVal.list.type = GdbMiList.Type.Results;
         stackListVal.list.results.addAll(parseFrameLine(line));
 
-        subRes.value = stackListVal;
-        return subRes;
+        return new GdbMiResult("stack", stackListVal);
     }
 
-    private static Collection<GdbMiResult> parseFrameLine(String line) {
-        Collection<GdbMiResult> result = new ArrayList<GdbMiResult>();
+    @NotNull
+    private static List<GdbMiResult> parseFrameLine(final String line) {
+        final List<GdbMiResult> result = new ArrayList<>();
 
-        String pattern = "\\{" +
-            "(?:level=\"(?<level>\\d+)\")?,?" +
+        final String pattern = "\\{" +
             "(?:addr=\"(?<addr>[^\"]+)\")?,?" +
             "(?:func=\"(?<func>[^\"]+)\")?,?" +
             "(?:args=(?<args>\\[(.*?)\\]))?,?" +
             "(?:file=\"(?<file>[^\"]+)\")?,?" +
             "(?:fullname=\"(?<fullname>[^\"]+)\")?,?" +
             "(?:line=\"(?<line>\\d+)\")?,?" +
-            "(?:from=\"(?<from>[^\"]+)\")?" +
+            "(?:arch=\"(?<arch>.*)\")?" +
             "\\}";
 
-        Pattern p = Pattern.compile(pattern);
-        Matcher m = p.matcher(line);
+        final Pattern p = Pattern.compile(pattern);
+        final Matcher m = p.matcher(line);
 
         while (m.find()) {
-            GdbMiResult subRes = new GdbMiResult("frame");
-            GdbMiValue frameVal = new GdbMiValue(GdbMiValue.Type.Tuple);
-
-            // level="0"
-            if (m.group("level") != null) {
-                GdbMiResult levelVal = new GdbMiResult("level");
-                levelVal.value.type = GdbMiValue.Type.String;
-                levelVal.value.string = m.group("level");
-                frameVal.tuple.add(levelVal);
-            }
+            final GdbMiResult subRes = new GdbMiResult("frame");
+            final GdbMiValue frameVal = new GdbMiValue(GdbMiValue.Type.Tuple);
 
             // addr="0x0000000000400c57"
             if (m.group("addr") != null) {
@@ -147,17 +137,17 @@ public class GdbMiParser2 {
                 frameVal.tuple.add(lineVal);
             }
 
-            if (m.group("from") != null) {
-                GdbMiResult fromVal = new GdbMiResult("from");
-                fromVal.value.type = GdbMiValue.Type.String;
-                fromVal.value.string = m.group("from");
-                frameVal.tuple.add(fromVal);
+            // arch="i386:x86-64"
+            if(m.group("arch") != null) {
+                GdbMiResult archVal = new GdbMiResult("arch");
+                archVal.value.type = GdbMiValue.Type.String;
+                archVal.value.string = m.group("arch");
+                frameVal.tuple.add(archVal);
             }
 
             subRes.value = frameVal;
             result.add(subRes);
         }
-
         return result;
     }
 
