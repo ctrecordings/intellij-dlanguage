@@ -9,4 +9,17 @@
                               implementation="io.github.intellij.dlanguage.project.CLionDubProjectOpenProcessor" order="first"/>
     </extensions>
 
+    <extensions defaultExtensionNs="cidr.debugger">
+        <languageSupport language="Rust" implementationClass="org.rust.debugger.lang.RsDebuggerLanguageSupport"/>
+        <editorsExtension implementation="org.rust.debugger.lang.RsDebuggerEditorsExtension"/>
+        <lineBreakpointFileTypesProvider implementation="org.rust.debugger.RsLineBreakpointFileTypesProvider"/>
+        <debugProcessConfigurator implementation="org.rust.debugger.runconfig.RsDebugProcessConfigurator"/>
+        <backendConsoleInjectionHelper implementation="org.rust.debugger.RsBackendConsoleInjectionHelper"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="intellij.dlanguage">
+        <debugger.driverConfigurationProvider
+            implementation="org.rust.clion.debugger.CLionDlangDebuggerDriverConfigurationProvider"/>
+    </extensions>
+
 </idea-plugin>

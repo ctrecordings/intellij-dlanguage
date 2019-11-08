@@ -183,6 +183,7 @@ dependencies {
     compile project(':errorreporting')
     compile project(':debugger')
 
+
     testCompile 'io.kotlintest:kotlintest:2+'
 }
 
