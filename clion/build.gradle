@@ -10,7 +10,7 @@ apply plugin: 'kotlin'
 apply plugin: 'org.jetbrains.intellij'
 
 intellij {
-    version 'CL-2019.2.3'
+    version 'CL-2019.2'
 }
 
 dependencies {
