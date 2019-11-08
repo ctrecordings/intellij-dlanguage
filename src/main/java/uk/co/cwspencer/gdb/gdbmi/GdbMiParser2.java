@@ -87,7 +87,8 @@ public class GdbMiParser2 {
             "(?:file=\"(?<file>[^\"]+)\")?,?" +
             "(?:fullname=\"(?<fullname>[^\"]+)\")?,?" +
             "(?:line=\"(?<line>\\d+)\")?,?" +
-            "(?:from=\"(?<from>[^\"]+)\")?" +
+            "(?:from=\"(?<from>[^\"]+)\")?,?" +
+            "(?:arch=\"(?<arch>.*)\")?" +
             "\\}";
 
         Pattern p = Pattern.compile(pattern);
@@ -152,6 +153,14 @@ public class GdbMiParser2 {
                 fromVal.value.type = GdbMiValue.Type.String;
                 fromVal.value.string = m.group("from");
                 frameVal.tuple.add(fromVal);
+            }
+
+            // arch="i386:x86-64"
+            if(m.group("arch") != null) {
+                GdbMiResult archVal = new GdbMiResult("arch");
+                archVal.value.type = GdbMiValue.Type.String;
+                archVal.value.string = m.group("arch");
+                frameVal.tuple.add(archVal);
             }
 
             subRes.value = frameVal;
