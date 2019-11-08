@@ -10,7 +10,7 @@ interface DlangDebuggerDriverConfigurationProvider {
 
     companion object {
         @JvmField
-        val EP_NAME: ExtensionPointName<RsDebuggerDriverConfigurationProvider> =
+        val EP_NAME: ExtensionPointName<DlangDebuggerDriverConfigurationProvider> =
             ExtensionPointName.create("io.github.intellij.dlanguage.project.driverConfigurationProvider")
     }
 }

@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.intellij'
+
+intellij {
+    version 'CL-2019.2.3'
+}
+
+dependencies {
+
+    compile project(':utils')
+
+    compile ('io.sentry:sentry:1.7.27'){
+        exclude group: 'org.slf4j'
+    }
+}

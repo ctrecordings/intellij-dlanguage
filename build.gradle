@@ -182,6 +182,7 @@ dependencies {
     compile project(':utils')
     compile project(':errorreporting')
     compile project(':debugger')
+    compile project(':clion')
 
 
     testCompile 'io.kotlintest:kotlintest:2+'
